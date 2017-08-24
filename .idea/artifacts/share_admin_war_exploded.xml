@@ -10,7 +10,6 @@
           <element id="archive" name="share-core-1.0-SNAPSHOT.jar">
             <element id="module-output" name="share-core" />
           </element>
-          <element id="library" level="project" name="Maven: javax.servlet:javax.servlet-api:3.0.1" />
           <element id="library" level="project" name="Maven: org.slf4j:slf4j-api:1.7.5" />
           <element id="library" level="project" name="Maven: ch.qos.logback:logback-core:1.0.9" />
           <element id="library" level="project" name="Maven: ch.qos.logback:logback-classic:1.0.9" />
