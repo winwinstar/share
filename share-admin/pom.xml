@@ -25,5 +25,14 @@
     </dependencies>
     <build>
         <finalName>share-admin</finalName>
+        <resources>
+            <resource>
+                <directory>config/</directory>
+                <includes>
+                    <include>**/**</include>
+                </includes>
+                <filtering>true</filtering>
+            </resource>
+        </resources>
     </build>
 </project>
