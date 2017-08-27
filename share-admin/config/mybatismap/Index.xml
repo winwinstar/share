@@ -4,7 +4,7 @@
 <mapper namespace="com.camp.share.core.dao.UserDao">
 
     <select id="getUserInfo" resultType="com.camp.share.core.model.UserDO">
-        SELECT *  FROM test
+        SELECT *  FROM share
     </select>
 
 </mapper>
