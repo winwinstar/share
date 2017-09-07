@@ -15,13 +15,107 @@
 
     <bean class="com.mangofactory.swagger.configuration.SpringSwaggerConfig" />
 
-    <bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
-        <property name="viewClass" value="org.springframework.web.servlet.view.JstlView"/>
-        <property name="prefix" value="/WEB-INF/jsp/"/>
-        <property name="suffix" value=".jsp"/>
+    <!--<bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">-->
+        <!--<property name="viewClass" value="org.springframework.web.servlet.view.JstlView"/>-->
+        <!--<property name="prefix" value="/WEB-INF/jsp/"/>-->
+        <!--<property name="suffix" value=".jsp"/>-->
+    <!--</bean>-->
+
+    <!--<mvc:view-controller path="/" view-name="index"/>-->
+
+    <bean id="configMap" class="org.springframework.beans.factory.config.MapFactoryBean">
+        <property name="sourceMap">
+            <map>
+                <entry key="resourceLoaderPath" value="../velocity"/>
+                <entry key="json_features"
+                       value="WriteMapNullValue,DisableCheckSpecialChar,QuoteFieldNames,BrowserSecure"/>
+                <!-- 时间戳组 必须以 timestamp_group 开头, 可以根据需求任意添加-->
+                <entry key="timestamp_prefix" value="mvc_sample"/> <!-- 最好加个前缀,防止跟人冲突 -->
+                <entry key="timestamp_group_admin_order" value="20150508093455"/>
+                <entry key="timestamp_group_2" value="20150508093454"/>
+                <entry key="timestamp_group_3" value="20150508093455"/>
+            </map>
+        </property>
     </bean>
 
-    <mvc:view-controller path="/" view-name="index"/>
+    <!-- 视图解析器，所有modelview返回自动添加前后缀 -->
+    <bean id="velocityConfigurer"
+          class="org.springframework.web.servlet.view.velocity.VelocityConfigurer">
+        <property name="resourceLoaderPath">
+            <value>WEB-INF/velocity/</value>
+        </property>
+        <property name="velocityProperties">
+            <props>
+                <prop key="input.encoding">UTF-8</prop>
+                <prop key="output.encoding">UTF-8</prop>
+                <prop key="contentType">text/html;charset=UTF-8</prop>
+            </props>
+        </property>
+    </bean>
+
+    <!-- 配置视图的显示 -->
+    <bean id="ViewResolver" class="org.springframework.web.servlet.view.velocity.VelocityViewResolver">
+        <property name="cache" value="true" />
+        <property name="prefix" value="/" /><!-- 视图文件的前缀，即存放的路径 -->
+        <property name="suffix" value=".vm" /><!-- 视图文件的后缀名 -->
+        <!--<property name="toolboxConfigLocation" value="/WEB-INF/tools.xml" /><!–toolbox配置文件路径–>-->
+        <property name="dateToolAttribute" value="date" /><!--日期函数名称-->
+        <property name="numberToolAttribute" value="number" /><!--数字函数名称-->
+        <property name="contentType" value="text/html;charset=UTF-8" />
+        <property name="exposeSpringMacroHelpers" value="true" /><!--是否使用spring对宏定义的支持-->
+        <property name="exposeRequestAttributes" value="true" /><!--是否开放request属性-->
+        <property name="requestContextAttribute" value="rc"/><!--request属性引用名称-->
+    </bean>
+
+    <!-- 配置文件上传 -->
+    <bean id="multipartResolver"
+          class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+        <property name="maxUploadSize" value="5000000"/><!-- 5M -->
+        <property name="defaultEncoding" value="utf-8"/>
+    </bean>
+
+    <!-- 异常解析器 -->
+    <bean id="exceptionResolver"
+          class="org.springframework.web.servlet.handler.SimpleMappingExceptionResolver">
+        <property name="defaultErrorView">
+            <value>/common/error</value>
+        </property>
+
+        <property name="exceptionMappings">
+            <props>
+                <prop key="java.lang.Exception">/common/error</prop>
+                <prop key="java.lang.Throwable">/common/error</prop>
+                <prop key="javax.servlet.ServletException">/common/error</prop>
+                <prop key="java.lang.RuntimeException">/common/error</prop>
+                <prop key="java.sql.SQLException">/common/error</prop>
+            </props>
+        </property>
+        <property name="statusCodes">
+            <props>
+                <prop key="/common/error">500</prop>
+                <prop key="/common/error">404</prop>
+            </props>
+        </property>
+
+        <property name="warnLogCategory">
+            <value>org.springframework.web.servlet.handler.SimpleMappingExceptionResolver
+            </value>
+        </property>
+    </bean>
+
+    <bean id="velocityEngine"
+          class="org.springframework.ui.velocity.VelocityEngineFactoryBean">
+        <property name="velocityProperties">
+            <props>
+                <prop key="resource.loader">class</prop>
+                <prop key="class.resource.loader.class">
+                    org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader
+                </prop>
+                <prop key="input.encoding">UTF-8</prop>
+                <prop key="output.encoding">UTF-8</prop>
+            </props>
+        </property>
+    </bean>
 
     <mvc:interceptors>
         <!-- 使用bean定义一个Interceptor，直接定义在mvc:interceptors根下面的Interceptor将拦截所有的请求 -->

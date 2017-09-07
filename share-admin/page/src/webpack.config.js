@@ -37,13 +37,13 @@ module.exports = function (webpackConfig) {
   }, {});
   webpackConfig.entry = Object.assign({}, webpackConfig.entry, newEntries);
 
-  //external some file when compiling
-  webpackConfig.externals = {
-    "react": 'React',
-    "react-dom" : 'ReactDOM',
-    'react-router': 'ReactRouter',
-    'antd':'antd',
-  };
+  // //external some file when compiling
+  // webpackConfig.externals = {
+  //   "react": 'React',
+  //   "react-dom" : 'ReactDOM',
+  //   'react-router': 'ReactRouter',
+  //   'antd':'antd',
+  // };
 
   webpackConfig.devtool= '#source-map';
 

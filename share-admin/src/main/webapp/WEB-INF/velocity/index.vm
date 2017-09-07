@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <link rel="stylesheet" type="text/css" href="/resources/1.0.0/index.css"/>
+    <!--[if lt IE 10]>
+    <script src="https://as.alipayobjects.com/g/component/??console-polyfill/0.2.2/index.js,es5-shim/4.5.7/es5-shim.min.js,es5-shim/4.5.7/es5-sham.min.js,html5shiv/3.7.2/html5shiv.min.js,media-match/2.0.2/media.match.min.js"></script>
+    <![endif]-->
+    <style>
+        #root{
+            max-width:1080px;
+            margin:auto;
+        }
+
+        .ant-modal-header {
+            padding: 0.5rem;
+            color: #fff;
+            border-radius:0;
+        }
+
+        .ant-modal-content{
+            border-radius:0;
+            box-shadow: 7px 1px 10px rgb(153, 153, 153);
+        }
+
+        .ant-btn-primary{
+            color: white;
+            border: medium none;
+            border-radius: 3px;
+        }
+
+        .ant-btn-ghost{
+            border-radius: 3px;
+        }
+
+        .ant-modal-close {
+            margin-top: -5px;
+            color: rgb(255, 255, 255);
+        }
+
+        .ant-input {
+            border-radius:0;
+        }
+
+        .ant-pagination-item-active{
+            border-radius: 0;
+        }
+
+    </style>
+</head>
+<script src="http://assets.souche.com/assets/js/lib/jquery-1.9.1.min.js?t=20151102"></script>
+<body>
+<div id="root"></div>
+</body>
+<script>
+    window.SERVER_URL=""
+</script>
+<script src="/resources/1.0.0/common.js?t=$!{timestamp_group_1}"></script>
+<script src="/resources/1.0.0/index.js?t=$!{timestamp_group_1}"></script>
+</html>

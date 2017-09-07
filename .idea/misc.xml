@@ -5,6 +5,9 @@
     <file type="web" url="file://$PROJECT_DIR$/share-job" />
     <file type="web" url="file://$PROJECT_DIR$/share-site" />
   </component>
+  <component name="JavaScriptSettings">
+    <option name="languageLevel" value="JSX" />
+  </component>
   <component name="MavenProjectsManager">
     <option name="originalFiles">
       <list>

@@ -18,7 +18,7 @@ class IndexStore{
 	}
 
     handleGetMoreData = () => {
-        xFetch(SERVER_URL + '/index/getInitInfo').then(result => {
+        xFetch(SERVER_URL + '/info/getInitInfo').then(result => {
             this.setState({
                 dataList: result.data,
             });
