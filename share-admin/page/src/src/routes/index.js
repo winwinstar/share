@@ -1,5 +1,5 @@
 import React, { PropTypes } from 'react';
-import { Router, Route, IndexRoute, Link, hashHistory } from 'react-router';
+import { Router, Route, hashHistory } from 'react-router';
 import NotFound from 'components/common/NotFound';
 import Index from 'components/Index';
 import Test from 'components/Test';
