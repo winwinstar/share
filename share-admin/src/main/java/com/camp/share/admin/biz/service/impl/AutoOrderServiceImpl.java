@@ -254,7 +254,11 @@ public class AutoOrderServiceImpl implements AutoOrderService {
         queryConfig.setCode("menu_config");
         ConfigDO configTmp = userDao.getConfigInfo(queryConfig);
         if (!StringUtil.isEmpty(configTmp.getValue())) {
-            menuDOList = JSONArray.parseArray(configTmp.getValue(), MenuDO.class);
+            String dateCreate = DateUtil.floorToStr(configTmp.getDateCreate());
+            String dateNow = DateUtil.floorToStr(new Date());
+            if (dateNow.compareTo(dateCreate) == 0) {
+                menuDOList = JSONArray.parseArray(configTmp.getValue(), MenuDO.class);
+            }
         }
         if (menuDOList != null && menuDOList.size() > 0) {
             return menuDOList;

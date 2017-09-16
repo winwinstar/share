@@ -46,11 +46,11 @@
     </delete>
 
     <update id="updateConfigInfo" parameterType="com.camp.share.core.model.ConfigDO">
-        update order_config a set a.value = #{value} where a.code = #{code}
+        update order_config a set a.value = #{value}, a.date_create = #{dateCreate} where a.code = #{code}
     </update>
 
     <select id="getConfigInfo" parameterType="com.camp.share.core.model.ConfigDO" resultType="com.camp.share.core.model.ConfigDO">
-        SELECT a.id as id, a.code as code, a.value as value from order_config a
+        SELECT a.id as id, a.code as code, a.value as value, a.date_create as dateCreate from order_config a
         <where>
             <choose>
                 <when test="code != null">and code = #{code}</when>
