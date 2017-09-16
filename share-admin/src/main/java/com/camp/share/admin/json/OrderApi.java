@@ -21,7 +21,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 
 /**
- * Created by wushengsheng on 2017/6/10.
+ * Created by wushengsheng on 2017/9/10.
  */
 @Api(value = "auto-order-api" , description = "自动点餐api")
 @Controller
@@ -70,30 +70,49 @@ public class OrderApi {
     @RequestMapping(value = "/addOrder", method = RequestMethod.GET)
     @ApiOperation(value = "用户下单", httpMethod = "Get", notes = "用户下单")
     public Result addOrder(HttpServletRequest request, @ApiParam(name = "token", value = "美餐token", required = false) @Param(value = "token") String token,
+                           @ApiParam(name = "dateIndex", value = "下单的日期", required = true) @Param(value = "dateIndex") String dateIndex,
                            @ApiParam(name = "revisionId", value = "菜谱id", required = true) @Param(value = "revisionId") String revisionId,
                            @ApiParam(name = "name", value = "菜名", required = true) @Param(value = "name") String name,
                            @ApiParam(name = "corpRestaurant", value = "餐馆名称", required = true) @Param(value = "corpRestaurant") String corpRestaurant) {
         String meiCanCookie = getCookieFromRequest(request);
         boolean isSccuss = false;
+        MenuDO menuDO = new MenuDO();
+        menuDO.setRevisionId(revisionId);
+        menuDO.setName(name);
+        menuDO.setCorpRestaurant(corpRestaurant);
+        if (StringUtil.isAnyEmpty(dateIndex, menuDO.getCorpRestaurant(), menuDO.getName(), menuDO.getRevisionId())) {
+            return Result.fail("-1", "下单失败");
+        }
         if (StringUtil.isEmpty(meiCanCookie)) {
 
             if (StringUtil.isEmpty(token)) {
                 return Result.fail("-1", "请先获取点餐信息吧！");
             }
-            MenuDO menuDO = new MenuDO();
-            menuDO.setRevisionId(revisionId);
-            menuDO.setName(name);
-            menuDO.setCorpRestaurant(corpRestaurant);
-            isSccuss = autoOrderService.addMenuInfoByCookie(token, menuDO);
+            isSccuss = autoOrderService.addMenuInfoByCookie(token, menuDO, dateIndex);
             return Result.success(isSccuss);
         }
-        isSccuss = autoOrderService.addMenuInfoByCookie(meiCanCookie, new MenuDO());
+        isSccuss = autoOrderService.addMenuInfoByCookie(meiCanCookie, menuDO, dateIndex);
         return Result.success(isSccuss);
+    }
+
+    @RequestMapping(value = "/delOrder", method = RequestMethod.GET)
+    @ApiOperation(value = "用户取消下单", httpMethod = "Get", notes = "取消下单")
+    public Result delUserOrder(HttpServletRequest request, @ApiParam(name = "token", value = "美餐token", required = false) @Param(value = "token") String token,
+                               @ApiParam(name = "dateIndex", value = "取消下单的日期", required = true) @Param(value = "dateIndex") String dateIndex) {
+        String meiCanCookie = getCookieFromRequest(request);
+        boolean isSuccess = false;
+        if (StringUtil.isAnyEmpty(meiCanCookie, dateIndex)) {
+            if (StringUtil.isEmpty(token)) {
+                return Result.fail("-1", "请先获取点餐信息吧！");
+            }
+            isSuccess = autoOrderService.delUserOrder(meiCanCookie, dateIndex);
+        }
+        return Result.success(isSuccess);
     }
 
     @RequestMapping(value = "/userInfo", method = RequestMethod.GET)
     @ApiOperation(value = "获取使用的用户信息", httpMethod = "Get", notes = "用户信息")
-    public Result<List<UserDO>> getUserInfo() {
+    public Result<List<UserDO>> getUserInfo(@ApiParam(name = "token", value = "美餐token", required = false) @Param(value = "token") String token) {
         List<UserDO> userDOS = autoOrderService.getAllUserInfo();
         return Result.success(userDOS);
     }

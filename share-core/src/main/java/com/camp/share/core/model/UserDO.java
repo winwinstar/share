@@ -13,6 +13,9 @@ import java.util.Date;
 @ApiModel(value = "用户基本信息", description = "UserDO")
 public class UserDO {
 
+    @ApiModelProperty(value = "id")
+    private Integer id;
+
     @ApiModelProperty(value = "美餐用户uid")
     private String uniqueid;
 

@@ -13,6 +13,10 @@ class IndexAction{
     addMenuInfo(data){
         return data;
     }
+
+    delMenuInfo(data){
+        return data;
+    }
 }
 
 export default Alt.createActions(IndexAction);

@@ -1,4 +1,4 @@
-package com.camp.share.core.model;
+package com.camp.share.core.model.dto;
 
 import lombok.Data;
 

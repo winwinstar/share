@@ -69,25 +69,34 @@ class Index extends Component {
 	        timestamp = menuDO.timestamp;
             menuView = (
                 <div>
-                    <Col span={12} style={{color:"purple"}}>今晚已点：<a style={{color:"green"}}>{ menuDO.name }，</a>{ menuDO.location }号</Col>
-                    <Col span={12}><a>发送到QQ</a></Col>
+                    <Col span={14} style={{color:"purple"}}>今晚已点：<a style={{color:"green"}}>{ menuDO.name }，</a>{ menuDO.location }号</Col>
+                    <Col span={10}><a>发送到QQ</a></Col>
                 </div>
             );
         }
 
         if (timestamp) {
 	        let str = getYMDW(timestamp, userName);
-	        if (str.indexOf("星期六") > 0 || str.indexOf("星期日") > 0) {
+	        if (str.indexOf("星期六") > 0 || str.indexOf("星期天") > 0) {
                 menuView = (
                     <div>
-                        <Col span={12}><a style={{color:"red"}}>周末就别想着加班了！</a></Col>
+                        <Col span={12}><a style={{color:"red"}}>周末就别想着加班的事了！</a></Col>
                     </div>
                 );
             }
         }
 
+        let getCookieView = (
+            <Col span={12}>
+                <Row>
+                    <Col span={17}><Input id={'meiCangToken'} style={{width:'350px'}} placeholder="登录美餐网获取的token"/></Col>
+                    <Col span={6}><Button type="primary" icon="search" onClick={this.handleInitInfo}>获取点餐信息</Button></Col>
+                </Row>
+            </Col>
+        );
         if (userDO) {
             userName = userDO.name;
+            getCookieView = null;
         }
 
 		return(
@@ -95,12 +104,7 @@ class Index extends Component {
             <Layout>
                 <Row className={styles.antRow}>
                     <Col span={12} style={{color:"blue"}}> {getYMDW(timestamp, userName)} </Col>
-                    <Col span={12}>
-                        <Row>
-                            <Col span={17}><Input id={'meiCangToken'} style={{width:'350px'}} placeholder="登录美餐网获取的token"/></Col>
-                            <Col span={6}><Button type="primary" icon="search" onClick={this.handleInitInfo}>获取点餐信息</Button></Col>
-                        </Row>
-                    </Col>
+                    { getCookieView }
                 </Row>
                 <Row className={styles.antRow}>
                     { menuView }
@@ -129,7 +133,7 @@ class MenuInfoSecByDay extends Component {
         selectRestaurant: '',
     };
 
-    handleChange(value, menuList) {
+    handleChange(value,  menuList, index) {
         console.log(`selected ${value}`);
         if (menuList) {
             menuList.map((item) => {
@@ -140,6 +144,7 @@ class MenuInfoSecByDay extends Component {
                         selectRestaurant: item.corpRestaurant.substr(0, item.corpRestaurant.indexOf("(")) || item.corpRestaurant,
                     });
                     IndexAction.addMenuInfo({
+                        dateIndex: index,
                         revisionId: item.revisionId,
                         name: item.name,
                         corpRestaurant: item.corpRestaurant,
@@ -151,6 +156,9 @@ class MenuInfoSecByDay extends Component {
 
     handleCancel(index) {
         console.log('cancel',index);
+        IndexAction.delMenuInfo({
+            dateIndex: index,
+        }),
         this.setState({
             selectMenuId: '',
             selectMenu: '',
@@ -191,7 +199,7 @@ class MenuInfoSecByDay extends Component {
                         style={{ width: '100%' }}
                         placeholder="还没翻牌哦"
                         optionFilterProp="children"
-                        onChange={(key) => this.handleChange(key,menuList)}
+                        onChange={(key) => this.handleChange(key,menuList,index)}
                         onFocus={this.handleFocus}
                         filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
                     >

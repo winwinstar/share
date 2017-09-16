@@ -13,6 +13,9 @@ import java.util.Date;
 @ApiModel(value = "菜单信息", description = "UserDO")
 public class MenuDO {
 
+    @ApiModelProperty(value = "id")
+    private Integer id;
+
     @ApiModelProperty(value = "店铺名")
     private String corpRestaurant;
 
@@ -25,6 +28,8 @@ public class MenuDO {
     @ApiModelProperty(value = "放置位置")
     private String location;
 
-    @ApiModelProperty(value = "放置位置")
+    @ApiModelProperty(value = "时间戳")
     private Date timestamp = new Date();
+
+    private int weekDate;
 }

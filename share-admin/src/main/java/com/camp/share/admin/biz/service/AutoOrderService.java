@@ -33,7 +33,15 @@ public interface AutoOrderService {
      * @param menuDO
      * @return
      */
-    boolean addMenuInfoByCookie(String cookie, MenuDO menuDO);
+    boolean addMenuInfoByCookie(String cookie, MenuDO menuDO, String dateIndex);
+
+    /**
+     * 用户取消下单
+     *
+     * @param cookie
+     * @return
+     */
+    boolean delUserOrder(String cookie, String dateIndex);
 
     /**
      * 获取所有餐馆的菜单信息

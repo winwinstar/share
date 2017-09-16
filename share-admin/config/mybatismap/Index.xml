@@ -15,7 +15,6 @@
                 <when test="mobile != null">and mobile = #{mobile}</when>
                 <when test="email != null">and email = #{email}</when>
                 <when test="token != null">and token = #{token}</when>
-                <when test="createDate != null">and create_date = #{createDate}</when>
              </choose>
         </where>
     </select>
@@ -23,5 +22,40 @@
     <insert id="addUserInfo" parameterType="com.camp.share.core.model.UserDO">
         insert into order_user (unique_id, name, age, address, mobile, email, token, create_date) VALUES (#{uniqueid}, #{name}, #{age}, #{address}, #{mobile}, #{email}, #{meiCangToken}, #{createDate})
     </insert>
+
+    <insert id="addUserOrder" parameterType="com.camp.share.core.model.MenuDO">
+        insert into order_menu (id, name, corp_restaurant, revision_id, week_date) VALUES (#{id}, #{name}, #{corpRestaurant}, #{revisionId}, #{weekDate})
+    </insert>
+
+    <select id="getUserOrder" parameterType="com.camp.share.core.model.MenuDO" resultType="com.camp.share.core.model.MenuDO">
+        SELECT a.id as id, a.name as name, a.corp_restaurant as corpRestaurant, a.revision_id as revisionId, a.week_date as weekDate FROM order_menu a
+        <where>
+            <choose>
+                <when test="id != null ">and id = #{id}</when>
+                <when test="weekDate != null">and week_date = #{weekDate}</when>
+            </choose>
+        </where>
+    </select>
+
+    <update id="updateUserOrder" parameterType="com.camp.share.core.model.MenuDO">
+        update order_menu a set a.name = #{name}, a.corp_restaurant = #{corpRestaurant}, a.revision_id = #{revisionId} where a.id = #{id} AND a.week_date = #{weekDate}
+    </update>
+
+    <delete id="delUserOrder" parameterType="com.camp.share.core.model.MenuDO">
+        delete a FROM order_menu a  where a.id = #{id} AND a.week_date = #{weekDate}
+    </delete>
+
+    <update id="updateConfigInfo" parameterType="com.camp.share.core.model.ConfigDO">
+        update order_config a set a.value = #{value} where a.code = #{code}
+    </update>
+
+    <select id="getConfigInfo" parameterType="com.camp.share.core.model.ConfigDO" resultType="com.camp.share.core.model.ConfigDO">
+        SELECT a.id as id, a.code as code, a.value as value from order_config a
+        <where>
+            <choose>
+                <when test="code != null">and code = #{code}</when>
+            </choose>
+        </where>
+    </select>
 
 </mapper>

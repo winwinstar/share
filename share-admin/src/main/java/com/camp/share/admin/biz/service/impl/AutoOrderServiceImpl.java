@@ -5,8 +5,9 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.camp.share.admin.biz.service.AutoOrderService;
 import com.camp.share.core.dao.UserDao;
+import com.camp.share.core.model.ConfigDO;
 import com.camp.share.core.model.MenuDO;
-import com.camp.share.core.model.RestaurantDTO;
+import com.camp.share.core.model.dto.RestaurantDTO;
 import com.camp.share.core.model.UserDO;
 import com.camp.share.core.model.vo.OrderVO;
 import com.camp.share.core.service.UserService;
@@ -21,6 +22,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -53,6 +55,12 @@ public class AutoOrderServiceImpl implements AutoOrderService {
     // 获取所有可下单的餐馆的菜单信息get
     private static final String getAllRestaurantMenuInfo = "https://meican.com/preorder/api/v2.1/restaurants/show";
 
+    // 获取所有可下单的餐馆的菜单信息post
+    private static final String addOrder = "https://meican.com/preorder/api/v2.1/orders/add";
+
+    // 取消下单
+    private static final String delOrder = "https://meican.com/preorder/api/v2.1/orders/delete";
+
     public List<UserDO> getAllUserInfo() {
         return userService.getAllUserInfo();
     }
@@ -65,7 +73,6 @@ public class AutoOrderServiceImpl implements AutoOrderService {
         }
 
         OrderVO orderVO = new OrderVO();
-
         // 获取美餐登录信息
         try {
             Map loginResult = HttpClient.get(getUserInfo, "", "remember=" + cookie);
@@ -94,6 +101,11 @@ public class AutoOrderServiceImpl implements AutoOrderService {
             if (userDO == null || userDO.getUniqueid() == null) {
                 userDao.addUserInfo(tmp);
             }
+
+            MenuDO queryParam = new MenuDO();
+            queryParam.setId(userDao.getUserInfo(tmp).getId());
+            List<MenuDO> list = userDao.getUserOrder(queryParam);
+            orderVO.setMenuDOS(list);
 
             // 查找用户当天的点餐信息按周查询
             String dateInfo = "beginDate=" + DateUtil.format(new Date(), DateUtil.DEFAULT_DATE) + "&endDate=" + DateUtil.format(DateUtil.getAfterDate(6, 0), DateUtil.DEFAULT_DATE);
@@ -133,7 +145,6 @@ public class AutoOrderServiceImpl implements AutoOrderService {
                 return orderVO;
             }
 
-            // todo 如果用户使用了自动点餐 则加上自动点餐信息，返回
             MenuDO menuDO = new MenuDO();
 
             JSONObject menuObject = JSONObject.parseObject(orderResult.get("lines").toString());
@@ -159,14 +170,96 @@ public class AutoOrderServiceImpl implements AutoOrderService {
         return orderVO;
     }
 
-    public boolean addMenuInfoByCookie(String cookie, MenuDO menuDO) {
+    public boolean addMenuInfoByCookie(String cookie, MenuDO menuDO, String dateIndex) {
 
-        return false;
+        // 拼接添加订单信息
+        Map<String, String> params = Maps.newHashMap();
+        // 大搜车地址
+        params.put("corpAddressUniqueId", "e5606ba8d703");
+        // 下单数量，菜谱id
+        params.put("order", "[{\"count\":1,\"dishId\":"+ menuDO.getRevisionId() +"}]");
+        params.put("tabUniqueId", "a70cf5fe-c875-4dd8-9dd1-ad0a7ae3d214");
+        // 下单截止时间
+        params.put("targetTime", DateUtil.format(new Date(), DateUtil.DEFAULT_DATE) + "+17:00");
+        // 大搜车地址
+        params.put("userAddressUniqueId", "e5606ba8d703");
+
+        Date today = new Date();
+        if (DateUtil.getWeekdayNumber(today) == Integer.parseInt(dateIndex)) {
+            Map orderResult = null;
+            try {
+                orderResult = HttpClient.post(addOrder, StringUtil.urlAppend(params), "remember=" + cookie);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+            if (orderResult == null || orderResult.get("lines") == null || orderResult.get("cookies") == null) {
+                return false;
+            }
+        }
+
+        UserDO userDO = new UserDO();
+        userDO.setToken(cookie);
+        UserDO tmp = userDao.getUserInfo(userDO);
+        menuDO.setId(tmp.getId());
+        menuDO.setWeekDate(Integer.parseInt(dateIndex));
+
+        MenuDO menuTmp = new MenuDO();
+        menuTmp.setId(tmp.getId());
+        menuTmp.setWeekDate(Integer.parseInt(dateIndex));
+        List<MenuDO> menuDOList = userDao.getUserOrder(menuTmp);
+        for (MenuDO tmpDO : menuDOList) {
+            if (tmpDO.getWeekDate() == Integer.parseInt(dateIndex)) {
+                return userDao.updateUserOrder(menuDO) > 0;
+            }
+        }
+
+        return userDao.addUserOrder(menuDO) > 0;
+    }
+
+    public boolean delUserOrder(String cookie, String dateIndex) {
+        // 拼接取消订单信息
+        Map<String, String> params = Maps.newHashMap();
+        params.put("uniqueId", ""); // todo 待周一查看具体数据
+        params.put("type", "CORP_ORDER");
+
+        Date today = new Date();
+        Map orderResult = null;
+        if (DateUtil.getWeekdayNumber(today) == Integer.parseInt(dateIndex)) {
+            try {
+                orderResult = HttpClient.post(delOrder, StringUtil.urlAppend(params), "remember=" + cookie);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+            if (orderResult == null || orderResult.get("lines") == null || orderResult.get("cookies") == null) {
+                return false;
+            }
+        }
+
+        UserDO userDO = new UserDO();
+        userDO.setToken(cookie);
+        UserDO tmp = userDao.getUserInfo(userDO);
+        MenuDO menuDOTmp = new MenuDO();
+        menuDOTmp.setId(tmp.getId());
+        menuDOTmp.setWeekDate(Integer.parseInt(dateIndex));
+
+        return userDao.delUserOrder(menuDOTmp) > 0;
     }
 
     public List<MenuDO> getAllMenuInfo() {
 
         List<MenuDO> menuDOList = Lists.newArrayList();
+        ConfigDO queryConfig = new ConfigDO();
+        queryConfig.setCode("menu_config");
+        ConfigDO configTmp = userDao.getConfigInfo(queryConfig);
+        if (!StringUtil.isEmpty(configTmp.getValue())) {
+            menuDOList = JSONArray.parseArray(configTmp.getValue(), MenuDO.class);
+        }
+        if (menuDOList != null && menuDOList.size() > 0) {
+            return menuDOList;
+        }
+
         String cookie = "2874ddd684eb29ba98300ef07e5404d07cffaca8-605578";
         Map loginResult = null;
 //        String urlParams = "tabUniqueId=a70cf5fe-c875-4dd8-9dd1-ad0a7ae3d214&targetTime=" + DateUtil.format(new Date(), DateUtil.DEFAULT_DATE) + "+17:00";
@@ -229,6 +322,11 @@ public class AutoOrderServiceImpl implements AutoOrderService {
             }
 
         }
+
+        ConfigDO configDO = new ConfigDO();
+        configDO.setCode("menu_config");
+        configDO.setValue(JSONArray.toJSONString(menuDOList));
+        userDao.updateConfigInfo(configDO);
 
         return menuDOList;
     }

@@ -9,6 +9,7 @@ class IndexStore{
             handleGetAllMenuInfo: IndexAction.getAllMenuInfo,
             handleGetInitInfo:    IndexAction.getInitInfo,
             handleAddMenuInfo:    IndexAction.addMenuInfo,
+            handleDelMenuInfo:    IndexAction.delMenuInfo,
 		});
 		this.state={
             menuList:[],
@@ -25,7 +26,7 @@ class IndexStore{
 	}
 
     handleGetInitInfo = (value) => {
-        xFetch(SERVER_URL + '/order/login.json?token=' + value).then(result => {
+        xFetch(SERVER_URL + '/order/login.json').then(result => {
             this.setState({
                 dataList: result.data,
             });
@@ -33,10 +34,20 @@ class IndexStore{
     }
 
     handleAddMenuInfo = (value) => {
-        let orderParam = "revisionId=" + value.revisionId + "&"
+        let orderParam = "dateIndex=" + value.dateIndex + "&"
+                        + "revisionId=" + value.revisionId + "&"
                         + "name=" + value.name + "&"
                         + "corpRestaurant=" +value.corpRestaurant;
         xFetch(SERVER_URL + '/order/addOrder.json?' + orderParam).then(result => {
+            this.setState({
+
+            });
+        });
+    }
+
+    handleDelMenuInfo = (value) => {
+        let orderParam = "dateIndex=" + value.dateIndex;
+        xFetch(SERVER_URL + '/order/delOrder.json?' + orderParam).then(result => {
             this.setState({
 
             });
