@@ -3,117 +3,15 @@ import connectToStores from 'alt-utils/lib/connectToStores';
 import IndexStore from 'stores/IndexStore.js';
 import IndexAction  from 'actions/IndexAction.js';
 import Layout from 'components/common/Layout';
-import {Button,Table, Modal, Checkbox, Form, Row, Col, Input, Switch, Icon, Upload, Transfer} from 'antd';
+import {Button,Table, Modal, Checkbox, Form, Row, Col, Input, Switch, Upload, Card, Select, Rate, Icon} from 'antd';
 import styles from './indexPage.less';
 import {getYMDW} from 'services/functions.js';
 
 const CheckboxGroup = Checkbox.Group;
+const Option = Select.Option;
 
 const plainOptions = ['Apple', 'Pear', 'Orange'];
 const defaultCheckedList = ['Apple', 'Pear', 'Orange'];
-
-const columns = [{
-  title: '姓名',
-  dataIndex: 'name',
-  key: 'name',
-    render(text, record) {
-      return (
-          <div>
-              <div>{record.name}</div>
-          </div>
-        );
-    }
-}, {
-  title: '年龄',
-  dataIndex: 'age',
-  key: 'age',
-    render(text, record) {
-        return (
-            <div>
-                <div>{record.age}</div>
-            </div>
-        );
-    }
-}, {
-  title: '地址',
-  dataIndex: 'address',
-  key: 'address',
-    render(text, record) {
-        return (
-            <div>
-                <div>{record.address}</div>
-            </div>
-        );
-    }
-}, {
-    title: 'Action',
-    dataIndex: 'action',
-    key: 'action',
-    render(text, record) {
-        return (
-            <div>
-                <ActiveConfigForm/>
-            </div>
-        );
-    }
-}];
-
-const weekDays = [{
-    title: '星期一',
-    dataIndex: 'monday',
-    key: 'monday',
-    render(text, record) {
-        return (
-            <div>
-                <MenuInfo/>
-            </div>
-        );
-    }
-}, {
-    title: '星期二',
-    dataIndex: 'tuesday',
-    key: 'tuesday',
-    render(text, record) {
-        return (
-            <div>
-                <MenuInfo/>
-            </div>
-        );
-    }
-}, {
-    title: '星期三',
-    dataIndex: 'wednesday',
-    key: 'wednesday',
-    render(text, record) {
-        return (
-            <div>
-                <MenuInfo/>
-            </div>
-        );
-    }
-}, {
-    title: '星期四',
-    dataIndex: 'thursday',
-    key: 'thursday',
-    render(text, record) {
-        return (
-            <div>
-                <MenuInfo/>
-            </div>
-        );
-    }
-}, {
-    title: '星期五',
-    dataIndex: 'friday',
-    key: 'friday',
-    render(text, record) {
-        return (
-            <div>
-                <MenuInfo/>
-            </div>
-        );
-    }
-}];
 
 class Index extends Component {
 
@@ -125,34 +23,97 @@ class Index extends Component {
 		let state = IndexStore.getState();
 		console.log('Global State :',state)
 		return {
+            menuList: state.menuList,
             dataList: state.dataList
 		}
 	}
 
     componentDidMount() {
-	    IndexAction.getMoreData();
+	    IndexAction.getInitInfo(null);
+        IndexAction.getAllMenuInfo(null);
+    }
+
+    handleInitInfo = (e) => {
+        let meiCangToken = document.getElementById('meiCangToken').value;
+        if (meiCangToken.length === 47) {
+            var username = document.cookie.split(";")[0].split("=")[0];
+            IndexAction.getInitInfo(meiCangToken);
+            console.log("cookie", username);
+        }
+    }
+
+    onChange(e) {
+        if (e) {
+            console.log("e", e);
+        }
+        if (!!!e) {
+            this.setState({
+
+            });
+        }
     }
 
 	render(){
+	    let menuDO = this.props.dataList.menuDO;
+	    let userDO = this.props.dataList.userDO;
+        let menuList = this.props.menuList;
+	    let timestamp = new Date();
+	    let userName = "";
+	    let menuView = (
+            <div>
+                <Col span={12}><a style={{color:"red"}}>抓紧时间还未点餐哦！</a></Col>
+            </div>
+        );
+
+	    if (menuDO) {
+	        timestamp = menuDO.timestamp;
+            menuView = (
+                <div>
+                    <Col span={12} style={{color:"purple"}}>今晚已点：<a style={{color:"green"}}>{ menuDO.name }，</a>{ menuDO.location }号</Col>
+                    <Col span={12}><a>发送到QQ</a></Col>
+                </div>
+            );
+        }
+
+        if (timestamp) {
+	        let str = getYMDW(timestamp, userName);
+	        if (str.indexOf("星期六") > 0 || str.indexOf("星期日") > 0) {
+                menuView = (
+                    <div>
+                        <Col span={12}><a style={{color:"red"}}>周末就别想着加班了！</a></Col>
+                    </div>
+                );
+            }
+        }
+
+        if (userDO) {
+            userName = userDO.name;
+        }
+
 		return(
         <div>
             <Layout>
                 <Row className={styles.antRow}>
-                    <Col span={12}> {getYMDW(new Date())} 尊敬的伍胜胜！<Switch checkedChildren="已开启自动点餐" unCheckedChildren="未开启自动点餐" /></Col>
+                    <Col span={12} style={{color:"blue"}}> {getYMDW(timestamp, userName)} </Col>
                     <Col span={12}>
                         <Row>
-                            <Col span={17}><Input style={{width:'350px'}} placeholder="登录美餐网获取的token"/></Col>
-                            <Col span={6}><Button type="primary" icon="search" >获取点餐信息</Button></Col>
+                            <Col span={17}><Input id={'meiCangToken'} style={{width:'350px'}} placeholder="登录美餐网获取的token"/></Col>
+                            <Col span={6}><Button type="primary" icon="search" onClick={this.handleInitInfo}>获取点餐信息</Button></Col>
                         </Row>
                     </Col>
                 </Row>
                 <Row className={styles.antRow}>
-                    <Col span={12}><a>今天已点</a>佛跳墙</Col>
-                    <Col span={12}><a>发送到QQ</a></Col>
+                    { menuView }
                 </Row>
-                <Table columns={weekDays} dataSource={['hello']} bordered pagination={false}/>
                 {/*<Table columns={columns} dataSource={this.props.dataList} bordered/>*/}
-                <SelectMenu/>
+                <Row className={styles.antRow}>
+                    <Col span={5}>星期一</Col>
+                    <Col span={5}>星期二</Col>
+                    <Col span={5}>星期三</Col>
+                    <Col span={5}>星期四</Col>
+                    <Col span={4}>星期五</Col>
+                </Row>
+                <AllMenus menuList={menuList}/>
             </Layout>
         </div>
 
@@ -160,21 +121,109 @@ class Index extends Component {
 	}
 }
 
-export default connectToStores(Index);
+class MenuInfoSecByDay extends Component {
 
-export class MenuInfo extends Component {
+    state = {
+        selectMenuId: '',
+        selectMenu: '',
+        selectRestaurant: '',
+    };
+
+    handleChange(value, menuList) {
+        console.log(`selected ${value}`);
+        if (menuList) {
+            menuList.map((item) => {
+                if (value === item.revisionId) {
+                    this.setState({
+                        selectMenuId: item.revisionId,
+                        selectMenu: item.name.substr(0, item.name.indexOf("(")) || item.name,
+                        selectRestaurant: item.corpRestaurant.substr(0, item.corpRestaurant.indexOf("(")) || item.corpRestaurant,
+                    });
+                    IndexAction.addMenuInfo({
+                        revisionId: item.revisionId,
+                        name: item.name,
+                        corpRestaurant: item.corpRestaurant,
+                    });
+                }
+            });
+        }
+    }
+
+    handleCancel(index) {
+        console.log('cancel',index);
+        this.setState({
+            selectMenuId: '',
+            selectMenu: '',
+            selectRestaurant: '',
+        });
+    }
 
     render () {
+        let menuList = this.props.menuList;
+        let index = this.props.index;
+        let menuOption = null;
+        console.log("list", this.state);
+
+        if (menuList) {
+            menuOption = menuList.map((item, index) => {
+                let value = item;
+                if (value.name) {
+                    return <Option value={value.revisionId} key={index}>{value.name}</Option>;
+                }
+                return null;
+            });
+        }
+
+        let cancelMenu = null;
+        if (this.state.selectMenu && this.state.selectRestaurant) {
+            cancelMenu = (
+                <Button style={{marginTop: '10px'}} type="primary" shape="circle" icon="close" size={'large'} onClick={() => this.handleCancel(index)}/>
+            );
+        }
         return (
             <div>
-                <Row>
-                    <Col span={12}><PicturesWall/></Col>
-                    <Col span={12} style={{padding:'10px'}}>
-                        <p>{ '水果沙拉' }</p>
-                        <p>店铺：{ }</p>
-                        <a>更换菜谱</a>
-                    </Col>
-                </Row>
+                <PicturesWall/>
+                <p>{ this.state.selectMenu || '-' }</p>
+                <p>店铺：{ this.state.selectRestaurant || '-' }</p>
+                <div>
+                    <Select
+                        showSearch
+                        style={{ width: '100%' }}
+                        placeholder="还没翻牌哦"
+                        optionFilterProp="children"
+                        onChange={(key) => this.handleChange(key,menuList)}
+                        onFocus={this.handleFocus}
+                        filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+                    >
+                        { menuOption }
+                    </Select>
+                </div>
+                { cancelMenu }
+            </div>
+        )
+    }
+
+}
+
+export default connectToStores(Index);
+
+export class AllMenus extends Component {
+
+    render () {
+        const gridStyle = {
+            width: '20%',
+            height: '210px',
+            textAlign: 'center',
+        };
+
+        let menuList = this.props.menuList;
+        return (
+            <div>
+                <Card.Grid style={gridStyle}><MenuInfoSecByDay index={1} menuList={menuList} /></Card.Grid>
+                <Card.Grid style={gridStyle}><MenuInfoSecByDay index={2} menuList={menuList} /></Card.Grid>
+                <Card.Grid style={gridStyle}><MenuInfoSecByDay index={3} menuList={menuList} /></Card.Grid>
+                <Card.Grid style={gridStyle}><MenuInfoSecByDay index={4} menuList={menuList} /></Card.Grid>
+                <Card.Grid style={gridStyle}><MenuInfoSecByDay index={5} menuList={menuList} /></Card.Grid>
             </div>
         )
     }
@@ -224,67 +273,6 @@ export class PicturesWall extends Component {
     }
 }
 
-export class SelectMenu extends Component {
-    state = {
-        mockData: [],
-        targetKeys: [],
-    }
-    componentDidMount() {
-        this.getMock();
-    }
-    getMock = () => {
-        const targetKeys = [];
-        const mockData = [];
-        for (let i = 0; i < 20; i++) {
-            const data = {
-                key: i.toString(),
-                title: `content${i + 1}`,
-                description: `description of content${i + 1}`,
-                chosen: Math.random() * 2 > 1,
-            };
-            if (data.chosen) {
-                targetKeys.push(data.key);
-            }
-            mockData.push(data);
-        }
-        this.setState({ mockData, targetKeys });
-    }
-    handleChange = (targetKeys) => {
-        this.setState({ targetKeys });
-    }
-    renderFooter = () => {
-        return (
-            <Button
-                size="small"
-                style={{ float: 'right', margin: 5 }}
-                onClick={this.getMock}
-            >
-                刷新
-            </Button>
-        );
-    }
-    render() {
-        return (
-            <div style={{marginTop: '10px'}}>
-                <p style={{fontSize:'12pt', marginBottom: '10px'}}>批量选择菜单</p>
-                <Transfer
-                    dataSource={this.state.mockData}
-                    showSearch
-                    listStyle={{
-                        width: 250,
-                        height: 300,
-                    }}
-                    className = {styles.menusCard}
-                    operations={['选中', '去除']}
-                    targetKeys={this.state.targetKeys}
-                    onChange={this.handleChange}
-                    render={item =>`${item.title}-${item.description}`}
-                    footer={this.renderFooter}
-                />
-            </div>
-        );
-    }
-}
 
 let ActiveConfigModal = React.createClass({
     getInitialState() {

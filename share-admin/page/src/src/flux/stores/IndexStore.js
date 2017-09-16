@@ -1,26 +1,44 @@
 import Alt from 'bases/Alt.js';
 import IndexAction from 'actions/IndexAction.js';
 import xFetch from 'services/xFetch.js';
+import querystring from 'querystring';
+
 class IndexStore{
 	constructor(){
 		this.bindListeners({
-			handleInitTest: IndexAction.initTest,
-            handleGetMoreData: IndexAction.getMoreData
+            handleGetAllMenuInfo: IndexAction.getAllMenuInfo,
+            handleGetInitInfo:    IndexAction.getInitInfo,
+            handleAddMenuInfo:    IndexAction.addMenuInfo,
 		});
 		this.state={
-			testState:'hello test',
-            dataList:[]
+            menuList:[],
+            dataList:[],
         }
 	}
 
-	handleInitTest = (value)=>{
-		console.log('test store value:',value)
+    handleGetAllMenuInfo = ()=>{
+        xFetch(SERVER_URL + '/order/getAllMenuInfo.json').then(result => {
+            this.setState({
+                menuList: result.data,
+            });
+        });
 	}
 
-    handleGetMoreData = () => {
-        xFetch(SERVER_URL + '/info/getInitInfo').then(result => {
+    handleGetInitInfo = (value) => {
+        xFetch(SERVER_URL + '/order/login.json?token=' + value).then(result => {
             this.setState({
                 dataList: result.data,
+            });
+        });
+    }
+
+    handleAddMenuInfo = (value) => {
+        let orderParam = "revisionId=" + value.revisionId + "&"
+                        + "name=" + value.name + "&"
+                        + "corpRestaurant=" +value.corpRestaurant;
+        xFetch(SERVER_URL + '/order/addOrder.json?' + orderParam).then(result => {
+            this.setState({
+
             });
         });
     }
