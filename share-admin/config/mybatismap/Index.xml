@@ -3,8 +3,25 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.camp.share.core.dao.UserDao">
 
-    <select id="getUserInfo" resultType="com.camp.share.core.model.UserDO">
-        SELECT *  FROM test
+    <select id="getAllUserInfo" resultType="com.camp.share.core.model.UserDO">
+        SELECT a.id as id, a.name as name, a.age as age, a.address as address, a.create_date as createDate, a.mobile as mobile, a.email as email, a.token as token, a.unique_id as uniqueid FROM order_user a where 1=1
     </select>
+
+    <select id="getUserInfo" parameterType="com.camp.share.core.model.UserDO" resultType="com.camp.share.core.model.UserDO">
+        SELECT a.id as id, a.name as name, a.age as age, a.address as address, a.create_date as createDate, a.mobile as mobile, a.email as email, a.token as token, a.unique_id as uniqueid FROM order_user a
+        <where>
+            <choose>
+                <when test="uniqueid != null ">and unique_id = #{uniqueid}</when>
+                <when test="mobile != null">and mobile = #{mobile}</when>
+                <when test="email != null">and email = #{email}</when>
+                <when test="token != null">and token = #{token}</when>
+                <when test="createDate != null">and create_date = #{createDate}</when>
+             </choose>
+        </where>
+    </select>
+
+    <insert id="addUserInfo" parameterType="com.camp.share.core.model.UserDO">
+        insert into order_user (unique_id, name, age, address, mobile, email, token, create_date) VALUES (#{uniqueid}, #{name}, #{age}, #{address}, #{mobile}, #{email}, #{meiCangToken}, #{createDate})
+    </insert>
 
 </mapper>

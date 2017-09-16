@@ -32,7 +32,7 @@ export function getYMD(shijianchuo){
     return y+'-'+add0(m)+'-'+add0(d);
 }
 
-export function getYMDW(shijianchuo){
+export function getYMDW(shijianchuo, userName){
     var time = new Date(shijianchuo);
     var y = time.getFullYear();
     var m = time.getMonth()+1;
@@ -60,7 +60,7 @@ export function getYMDW(shijianchuo){
     else if (hour < 22) {wisper = "晚上好！";}
     else {wisper = "深夜好！"}
 
-    return y+'年'+add0(m)+'月'+add0(d)+'日' + ' ' + weekday[time.getDay()] + ' ' + wisper;
+    return y+'年'+add0(m)+'月'+add0(d)+'日' + ' ' + weekday[time.getDay()] + ' ' + userName + wisper;
 }
 
 export function formatDateZero(shijianchuo){

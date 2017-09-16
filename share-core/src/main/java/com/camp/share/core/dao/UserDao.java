@@ -11,7 +11,24 @@ public interface UserDao {
 
     /**
      * 获取所有用户信息
+     *
      * @return
      */
-    List<UserDO> getUserInfo();
+    List<UserDO> getAllUserInfo();
+
+    /**
+     * 获取用户信息
+     *
+     * @param userDO
+     * @return
+     */
+    UserDO getUserInfo(UserDO userDO);
+
+    /**
+     * 添加用户
+     *
+     * @param userDO
+     * @return
+     */
+    int addUserInfo(UserDO userDO);
 }

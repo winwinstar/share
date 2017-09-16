@@ -1,14 +1,18 @@
 import Alt from 'bases/Alt.js';
 
 class IndexAction{
-    initTest(){
-        console.log("init my test");
-        return 'hello';
+
+    getInitInfo(data){
+        return data;
+   }
+
+    getAllMenuInfo(data){
+        return data;
     }
 
-  getMoreData(){
-    return null;
-  }
+    addMenuInfo(data){
+        return data;
+    }
 }
 
 export default Alt.createActions(IndexAction);

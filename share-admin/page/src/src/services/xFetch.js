@@ -1,6 +1,7 @@
 // 自定义访问服务器api函数
 
 import {notification} from 'antd';
+import {formatDate} from 'services/functions.js';
 
 const errorMessages = (res) => `${res.status} ${res.statusText}`;
 
@@ -41,10 +42,31 @@ function catchError(error){
     }
 }
 
-export function xFetch(url) {
+function xFetch(url) {
+    let seperator = '';
+    let token = '';
+
     let options = {
         method: 'get'
     };
+
+    //开发时候指定SERVER_URL,需带token,正式发布不需要携带该token
+    //开发环境下，不携带cookie
+    if(SERVER_URL){
+        token = 'token=' + '2874ddd684eb29ba98300ef07e5404d07cffaca8-605578';
+    }else{
+        options.credentials = 'include';
+    }
+
+    seperator = '?';
+
+    if(url.endsWith('.json')){
+        seperator = '?';
+    }else{
+        seperator = '&';
+    }
+    url = url + seperator + token;
+
 
     return fetch(url, options)
         .then(check401)
