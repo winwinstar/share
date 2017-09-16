@@ -22,7 +22,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -329,6 +328,7 @@ public class AutoOrderServiceImpl implements AutoOrderService {
 
         ConfigDO configDO = new ConfigDO();
         configDO.setCode("menu_config");
+        configDO.setDateCreate(new Date());
         configDO.setValue(JSONArray.toJSONString(menuDOList));
         userDao.updateConfigInfo(configDO);
 
