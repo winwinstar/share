@@ -29,7 +29,14 @@ class Index extends Component {
 	}
 
     componentDidMount() {
-	    IndexAction.getInitInfo(null);
+        let meiCangToken = document.getElementById('meiCangToken').value;
+        if (meiCangToken.length === 47) {
+            IndexAction.getInitInfo(meiCangToken);
+        }
+        var username = document.cookie.split(";")[0].split("=")[0];
+        if (username.endsWith('token')) {
+            IndexAction.getInitInfo(document.cookie.split(";")[0].split("=")[1]);
+        }
         IndexAction.getAllMenuInfo(null);
     }
 

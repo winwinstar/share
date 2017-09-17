@@ -75,7 +75,7 @@ public class OrderApi {
                            @ApiParam(name = "name", value = "菜名", required = true) @Param(value = "name") String name,
                            @ApiParam(name = "corpRestaurant", value = "餐馆名称", required = true) @Param(value = "corpRestaurant") String corpRestaurant) {
         String meiCanCookie = getCookieFromRequest(request);
-        boolean isSccuss = false;
+        boolean isSuccess = false;
         MenuDO menuDO = new MenuDO();
         menuDO.setRevisionId(revisionId);
         menuDO.setName(name);
@@ -88,11 +88,11 @@ public class OrderApi {
             if (StringUtil.isEmpty(token)) {
                 return Result.fail("-1", "请先获取点餐信息吧！");
             }
-            isSccuss = autoOrderService.addMenuInfoByCookie(token, menuDO, dateIndex);
-            return Result.success(isSccuss);
+            isSuccess = autoOrderService.addMenuInfoByCookie(token, menuDO, dateIndex);
+            return Result.success(isSuccess);
         }
-        isSccuss = autoOrderService.addMenuInfoByCookie(meiCanCookie, menuDO, dateIndex);
-        return Result.success(isSccuss);
+        isSuccess = autoOrderService.addMenuInfoByCookie(meiCanCookie, menuDO, dateIndex);
+        return Result.success(isSuccess);
     }
 
     @RequestMapping(value = "/delOrder", method = RequestMethod.GET)
@@ -103,10 +103,11 @@ public class OrderApi {
         boolean isSuccess = false;
         if (StringUtil.isAnyEmpty(meiCanCookie, dateIndex)) {
             if (StringUtil.isEmpty(token)) {
-                return Result.fail("-1", "请先获取点餐信息吧！");
+
             }
-            isSuccess = autoOrderService.delUserOrder(meiCanCookie, dateIndex);
+            return Result.fail("-1", "请先获取点餐信息吧！");
         }
+        isSuccess = autoOrderService.delUserOrder(meiCanCookie, dateIndex);
         return Result.success(isSuccess);
     }
 

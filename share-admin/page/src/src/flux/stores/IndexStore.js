@@ -26,7 +26,7 @@ class IndexStore{
 	}
 
     handleGetInitInfo = (value) => {
-        xFetch(SERVER_URL + '/order/login.json').then(result => {
+        xFetch(SERVER_URL + '/order/login.json?token=' + value).then(result => {
             this.setState({
                 dataList: result.data,
             });
