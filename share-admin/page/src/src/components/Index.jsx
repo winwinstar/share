@@ -253,7 +253,7 @@ export class PicturesWall extends Component {
             uid: -1,
             name: 'xxx.png',
             status: 'done',
-            url: 'https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png',
+            url: SERVER_URL + '/swagger/images/7b1007a834cc59dc3390da1d6609fada.png',
         }],
     };
 
