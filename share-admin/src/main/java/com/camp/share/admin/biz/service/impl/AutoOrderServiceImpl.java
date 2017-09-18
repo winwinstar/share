@@ -57,7 +57,7 @@ public class AutoOrderServiceImpl implements AutoOrderService {
     // 获取所有可下单的餐馆的菜单信息post
     private static final String addOrder = "https://meican.com/preorder/api/v2.1/orders/add";
 
-    // 取消下单
+    // 取消下单post
     private static final String delOrder = "https://meican.com/preorder/api/v2.1/orders/delete";
 
     public List<UserDO> getAllUserInfo() {
@@ -108,7 +108,6 @@ public class AutoOrderServiceImpl implements AutoOrderService {
 
             // 查找用户当天的点餐信息按周查询
             String dateInfo = "beginDate=" + DateUtil.format(new Date(), DateUtil.DEFAULT_DATE) + "&endDate=" + DateUtil.format(DateUtil.getAfterDate(6, 0), DateUtil.DEFAULT_DATE);
-//            String dateInfo = "beginDate=" + "2017-9-15" + "&endDate=" + DateUtil.format(DateUtil.getAfterDate(6, 0), DateUtil.DEFAULT_DATE);
 
             Map orderInfo = HttpClient.get(getOrderInfoByWeek, dateInfo, "remember=" + cookie);
             if (orderInfo == null || orderInfo.get("lines") == null) {
@@ -265,8 +264,7 @@ public class AutoOrderServiceImpl implements AutoOrderService {
 
         String cookie = "2874ddd684eb29ba98300ef07e5404d07cffaca8-605578";
         Map loginResult = null;
-//        String urlParams = "tabUniqueId=a70cf5fe-c875-4dd8-9dd1-ad0a7ae3d214&targetTime=" + DateUtil.format(new Date(), DateUtil.DEFAULT_DATE) + "+17:00";
-        String urlParams = "tabUniqueId=a70cf5fe-c875-4dd8-9dd1-ad0a7ae3d214&targetTime=" + "2017-9-15" + "+17:00";
+        String urlParams = "tabUniqueId=a70cf5fe-c875-4dd8-9dd1-ad0a7ae3d214&targetTime=" + DateUtil.format(new Date(), DateUtil.DEFAULT_DATE) + "+17:00";
 
         try {
             loginResult = HttpClient.get(getAllRestaurantInfo, urlParams, "remember=" + cookie);
