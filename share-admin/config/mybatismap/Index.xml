@@ -20,7 +20,7 @@
     </select>
 
     <insert id="addUserInfo" parameterType="com.camp.share.core.model.UserDO">
-        insert into order_user (unique_id, name, age, address, mobile, email, token, create_date) VALUES (#{uniqueid}, #{name}, #{age}, #{address}, #{mobile}, #{email}, #{meiCangToken}, #{createDate})
+        insert into order_user (unique_id, name, age, address, mobile, email, token, create_date) VALUES (#{uniqueid}, #{name}, #{age}, #{address}, #{mobile}, #{email}, #{token}, #{createDate})
     </insert>
 
     <insert id="addUserOrder" parameterType="com.camp.share.core.model.MenuDO">

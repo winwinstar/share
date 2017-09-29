@@ -63,6 +63,7 @@ class Index extends Component {
 	render(){
 	    let menuDO = this.props.dataList.menuDO;
 	    let userDO = this.props.dataList.userDO;
+	    let menuDOs = this.props.dataList.menuDOS;
         let menuList = this.props.menuList;
 	    let timestamp = new Date();
 	    let userName = "";
@@ -124,7 +125,7 @@ class Index extends Component {
                     <Col span={5}>星期四</Col>
                     <Col span={4}>星期五</Col>
                 </Row>
-                <AllMenus menuList={menuList}/>
+                <AllMenus menuList={menuList} menuDOs={menuDOs}/>
             </Layout>
         </div>
 
@@ -162,7 +163,6 @@ class MenuInfoSecByDay extends Component {
     }
 
     handleCancel(index) {
-        console.log('cancel',index);
         IndexAction.delMenuInfo({
             dateIndex: index,
         }),
@@ -176,8 +176,8 @@ class MenuInfoSecByDay extends Component {
     render () {
         let menuList = this.props.menuList;
         let index = this.props.index;
+        let menuDOs = this.props.menuDOs;
         let menuOption = null;
-        console.log("list", this.state);
 
         if (menuList) {
             menuOption = menuList.map((item, index) => {
@@ -187,6 +187,20 @@ class MenuInfoSecByDay extends Component {
                 }
                 return null;
             });
+        }
+
+        if (menuDOs) {
+            this.state.selectMenuId = menuDOs.revisionId;
+            if (menuDOs.name && menuDOs.name.indexOf("(") > 0) {
+                this.state.selectMenu =  menuDOs.name.substr(0, menuDOs.name.indexOf("(")) || menuDOs.name;
+            } else {
+                this.state.selectMenu =  menuDOs.name;
+            }
+            if (menuDOs.corpRestaurant && menuDOs.corpRestaurant.indexOf("(") > 0) {
+                this.state.selectRestaurant = menuDOs.corpRestaurant.substr(0, menuDOs.corpRestaurant.indexOf("(")) || menuDOs.corpRestaurant;
+            } else {
+                this.state.selectRestaurant = menuDOs.corpRestaurant;
+            }
         }
 
         let cancelMenu = null;
@@ -232,7 +246,8 @@ export class AllMenus extends Component {
         };
 
         let menuList = this.props.menuList;
-        return (
+        let menuDOs = this.props.menuDOs;
+        let menuView = (
             <div>
                 <Card.Grid style={gridStyle}><MenuInfoSecByDay index={1} menuList={menuList} /></Card.Grid>
                 <Card.Grid style={gridStyle}><MenuInfoSecByDay index={2} menuList={menuList} /></Card.Grid>
@@ -240,6 +255,47 @@ export class AllMenus extends Component {
                 <Card.Grid style={gridStyle}><MenuInfoSecByDay index={4} menuList={menuList} /></Card.Grid>
                 <Card.Grid style={gridStyle}><MenuInfoSecByDay index={5} menuList={menuList} /></Card.Grid>
             </div>
+        );
+        if (menuDOs) {
+            console.log("menudo weeklist", menuDOs);
+            let menuDO1 = [];
+            let menuDO2 = [];
+            let menuDO3 = [];
+            let menuDO4 = [];
+            let menuDO5 = [];
+            menuDOs.map((item, index) => {
+                switch (item.weekDate) {
+                    case 1:
+                        menuDO1 = item;
+                        break;
+                    case 2:
+                        menuDO2 = item;
+                        break;
+                    case 3:
+                        menuDO3 = item;
+                        break;
+                    case 4:
+                        menuDO4 = item;
+                        break;
+                    case 5:
+                        menuDO5 = item;
+                        break;
+                    default:
+                        break;
+                }
+            });
+            menuView = (
+                <div>
+                    <Card.Grid style={gridStyle}><MenuInfoSecByDay index={1} menuList={menuList} menuDOs={menuDO1}/></Card.Grid>
+                    <Card.Grid style={gridStyle}><MenuInfoSecByDay index={2} menuList={menuList} menuDOs={menuDO2}/></Card.Grid>
+                    <Card.Grid style={gridStyle}><MenuInfoSecByDay index={3} menuList={menuList} menuDOs={menuDO3}/></Card.Grid>
+                    <Card.Grid style={gridStyle}><MenuInfoSecByDay index={4} menuList={menuList} menuDOs={menuDO4}/></Card.Grid>
+                    <Card.Grid style={gridStyle}><MenuInfoSecByDay index={5} menuList={menuList} menuDOs={menuDO5}/></Card.Grid>
+                </div>
+            );
+        }
+        return (
+             menuView
         )
     }
 

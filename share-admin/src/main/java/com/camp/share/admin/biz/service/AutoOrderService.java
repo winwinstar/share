@@ -48,5 +48,11 @@ public interface AutoOrderService {
      *
      * @return
      */
-    List<MenuDO> getAllMenuInfo();
+    List<MenuDO> getAllMenuInfo(boolean isJobUpdate);
+
+    /**
+     * 定时拉取菜单信息
+     *
+     */
+    void getAllMenuInfoJob();
 }

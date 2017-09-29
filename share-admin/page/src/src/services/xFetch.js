@@ -53,7 +53,7 @@ function xFetch(url) {
     //开发时候指定SERVER_URL,需带token,正式发布不需要携带该token
     //开发环境下，不携带cookie
     if(SERVER_URL){
-        token = 'token=' + '2874ddd684eb29ba98300ef07e5404d07cffaca8-605578';
+        // token = 'token=' + '';
     }else{
         options.credentials = 'include';
     }

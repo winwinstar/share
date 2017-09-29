@@ -245,8 +245,7 @@ public class AutoOrderServiceImpl implements AutoOrderService {
         return userDao.delUserOrder(menuDOTmp) > 0;
     }
 
-    public List<MenuDO> getAllMenuInfo() {
-
+    public List<MenuDO> getAllMenuInfo(boolean isJobUpdate) {
         List<MenuDO> menuDOList = Lists.newArrayList();
         ConfigDO queryConfig = new ConfigDO();
         queryConfig.setCode("menu_config");
@@ -256,6 +255,10 @@ public class AutoOrderServiceImpl implements AutoOrderService {
             String dateNow = DateUtil.floorToStr(new Date());
             if (dateNow.compareTo(dateCreate) == 0) {
                 menuDOList = JSONArray.parseArray(configTmp.getValue(), MenuDO.class);
+            }
+
+            if (isJobUpdate) {
+                menuDOList.clear();
             }
         }
         if (menuDOList != null && menuDOList.size() > 0) {
@@ -331,5 +334,30 @@ public class AutoOrderServiceImpl implements AutoOrderService {
         userDao.updateConfigInfo(configDO);
 
         return menuDOList;
+    }
+
+    public void getAllMenuInfoJob() {
+
+        Thread thread = new Thread(new Runnable() {
+
+            public void run() {
+                while (true) {
+                    log.info("------------------update all menu job start------------------");
+                    Date now = new Date();
+                    String nowStr = DateUtil.format(now, "HH");
+                    if (nowStr.contains("9")) {
+                        getAllMenuInfo(true);
+                        log.info("------------------update all menu info success------------------");
+                    }
+                    try {
+                        Thread.sleep(60 * 60 * 1000);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        });
+
+        thread.start();
     }
 }

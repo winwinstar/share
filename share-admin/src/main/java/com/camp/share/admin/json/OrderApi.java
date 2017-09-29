@@ -63,7 +63,7 @@ public class OrderApi {
     @RequestMapping(value = "/getAllMenuInfo", method = RequestMethod.GET)
     @ApiOperation(value = "获取所有可下单餐馆的菜单", httpMethod = "Get", notes = "用户下单")
     public Result<List<MenuDO>> getAllMenuInfo() {
-        List<MenuDO> menuDOS = autoOrderService.getAllMenuInfo();
+        List<MenuDO> menuDOS = autoOrderService.getAllMenuInfo(false);
         return Result.success(menuDOS);
     }
 

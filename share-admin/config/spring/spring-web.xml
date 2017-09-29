@@ -122,4 +122,7 @@
         <bean class="com.camp.share.admin.enhance.Interceptor"/>
     </mvc:interceptors>
 
+    <!--定时更新菜单-->
+    <bean id="getAllMenuInfoJob" class="com.camp.share.admin.enhance.UpdateMenuJob"/>
+
 </beans>
