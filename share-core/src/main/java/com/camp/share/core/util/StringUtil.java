@@ -11,6 +11,10 @@ public class StringUtil {
         return param == null || param.length() == 0;
     }
 
+    public static boolean isNotEmpty(String param) {
+        return param != null && param.length() > 0;
+    }
+
     public static boolean isAnyEmpty(String... params) {
         for (String param : params) {
             if (isEmpty(param)) {

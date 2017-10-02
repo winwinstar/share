@@ -28,6 +28,9 @@ public class MenuDO {
     @ApiModelProperty(value = "放置位置")
     private String location;
 
+    @ApiModelProperty(value = "下单后返回的订单id")
+    private String uniqueId;
+
     @ApiModelProperty(value = "时间戳")
     private Date timestamp = new Date();
 

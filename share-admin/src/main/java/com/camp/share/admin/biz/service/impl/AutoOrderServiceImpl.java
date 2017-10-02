@@ -157,6 +157,17 @@ public class AutoOrderServiceImpl implements AutoOrderService {
             menuDO.setRevisionId(corpOrderUser.get("uniqueId").toString());
             menuDO.setLocation(menuLocation.getString("postboxCode"));
 
+            MenuDO tmpMenuDO = new MenuDO();
+            tmpMenuDO.setId(userDO.getId());
+            tmpMenuDO.setWeekDate(DateUtil.getWeekdayNumber(new Date()));
+            tmpMenuDO.setUniqueId(corpOrderUser.get("uniqueId").toString());
+            List<MenuDO> menuDOList = userDao.getUserOrder(tmpMenuDO);
+            for (MenuDO tmpDO : menuDOList) {
+                if (tmpDO.getWeekDate() == DateUtil.getWeekdayNumber(new Date())) {
+                    userDao.updateUserOrder(tmpMenuDO);
+                }
+            }
+
             orderVO.setUserDO(userDO);
             orderVO.setMenuDO(menuDO);
 
@@ -185,15 +196,15 @@ public class AutoOrderServiceImpl implements AutoOrderService {
         Date today = new Date();
         if (DateUtil.getWeekdayNumber(today) == Integer.parseInt(dateIndex)) {
             Map orderResult = null;
-            try {
-                orderResult = HttpClient.post(addOrder, StringUtil.urlAppend(params), "remember=" + cookie);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+//            try {
+//                orderResult = HttpClient.post(addOrder, StringUtil.urlAppend(params), "remember=" + cookie);
+//            } catch (IOException e) {
+//                e.printStackTrace();
+//            }
 
-            if (orderResult == null || orderResult.get("lines") == null || orderResult.get("cookies") == null) {
-                return false;
-            }
+//            if (orderResult == null || orderResult.get("lines") == null || orderResult.get("cookies") == null) {
+//                return false;
+//            }
         }
 
         UserDO userDO = new UserDO();
@@ -216,24 +227,6 @@ public class AutoOrderServiceImpl implements AutoOrderService {
     }
 
     public boolean delUserOrder(String cookie, String dateIndex) {
-        // 拼接取消订单信息
-        Map<String, String> params = Maps.newHashMap();
-        params.put("uniqueId", ""); // todo 待周一查看具体数据
-        params.put("type", "CORP_ORDER");
-
-        Date today = new Date();
-        Map orderResult = null;
-        if (DateUtil.getWeekdayNumber(today) == Integer.parseInt(dateIndex)) {
-            try {
-                orderResult = HttpClient.post(delOrder, StringUtil.urlAppend(params), "remember=" + cookie);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-
-            if (orderResult == null || orderResult.get("lines") == null || orderResult.get("cookies") == null) {
-                return false;
-            }
-        }
 
         UserDO userDO = new UserDO();
         userDO.setToken(cookie);
@@ -241,6 +234,38 @@ public class AutoOrderServiceImpl implements AutoOrderService {
         MenuDO menuDOTmp = new MenuDO();
         menuDOTmp.setId(tmp.getId());
         menuDOTmp.setWeekDate(Integer.parseInt(dateIndex));
+
+        MenuDO menuTmp = new MenuDO();
+        menuTmp.setId(tmp.getId());
+        menuTmp.setWeekDate(Integer.parseInt(dateIndex));
+        List<MenuDO> menuDOList = userDao.getUserOrder(menuTmp);
+        String unique_id = null;
+        for (MenuDO tmpDO : menuDOList) {
+            if (tmpDO.getWeekDate() == Integer.parseInt(dateIndex)) {
+                unique_id = tmpDO.getUniqueId();
+            }
+        }
+
+        if (StringUtil.isNotEmpty(unique_id)) {
+            // 拼接取消订单信息
+            Map<String, String> params = Maps.newHashMap();
+            params.put("uniqueId", unique_id);
+            params.put("type", "CORP_ORDER");
+
+            Date today = new Date();
+            Map orderResult = null;
+            if (DateUtil.getWeekdayNumber(today) == Integer.parseInt(dateIndex)) {
+                try {
+                    orderResult = HttpClient.post(delOrder, StringUtil.urlAppend(params), "remember=" + cookie);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+
+                if (orderResult == null || orderResult.get("lines") == null || orderResult.get("cookies") == null) {
+                    return false;
+                }
+            }
+        }
 
         return userDao.delUserOrder(menuDOTmp) > 0;
     }
@@ -250,7 +275,7 @@ public class AutoOrderServiceImpl implements AutoOrderService {
         ConfigDO queryConfig = new ConfigDO();
         queryConfig.setCode("menu_config");
         ConfigDO configTmp = userDao.getConfigInfo(queryConfig);
-        if (!StringUtil.isEmpty(configTmp.getValue())) {
+        if (configTmp != null && !StringUtil.isEmpty(configTmp.getValue())) {
             String dateCreate = DateUtil.floorToStr(configTmp.getDateCreate());
             String dateNow = DateUtil.floorToStr(new Date());
             if (dateNow.compareTo(dateCreate) == 0) {

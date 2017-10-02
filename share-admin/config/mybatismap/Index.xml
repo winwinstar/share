@@ -24,11 +24,11 @@
     </insert>
 
     <insert id="addUserOrder" parameterType="com.camp.share.core.model.MenuDO">
-        insert into order_menu (id, name, corp_restaurant, revision_id, week_date) VALUES (#{id}, #{name}, #{corpRestaurant}, #{revisionId}, #{weekDate})
+        insert into order_menu (id, name, corp_restaurant, revision_id, week_date, unique_id) VALUES (#{id}, #{name}, #{corpRestaurant}, #{revisionId}, #{weekDate}, #{uniqueId})
     </insert>
 
     <select id="getUserOrder" parameterType="com.camp.share.core.model.MenuDO" resultType="com.camp.share.core.model.MenuDO">
-        SELECT a.id as id, a.name as name, a.corp_restaurant as corpRestaurant, a.revision_id as revisionId, a.week_date as weekDate FROM order_menu a
+        SELECT a.id as id, a.name as name, a.corp_restaurant as corpRestaurant, a.revision_id as revisionId, a.week_date as weekDate, a.unique_id as uniqueId FROM order_menu a
         <where>
             <choose>
                 <when test="id != null ">and id = #{id}</when>
@@ -38,7 +38,14 @@
     </select>
 
     <update id="updateUserOrder" parameterType="com.camp.share.core.model.MenuDO">
-        update order_menu a set a.name = #{name}, a.corp_restaurant = #{corpRestaurant}, a.revision_id = #{revisionId} where a.id = #{id} AND a.week_date = #{weekDate}
+        update order_menu
+        <set>
+            <if test="name != null">name=#{name},</if>
+            <if test="corpRestaurant != null">corpRestaurant=#{corpRestaurant},</if>
+            <if test="revisionId != null">revision_id=#{revisionId},</if>
+            <if test="uniqueId != null">unique_id=#{uniqueId}</if>
+        </set>
+        where id = #{id} AND week_date = #{weekDate}
     </update>
 
     <delete id="delUserOrder" parameterType="com.camp.share.core.model.MenuDO">
