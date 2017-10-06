@@ -94,17 +94,18 @@ class Index extends Component {
             }
         }
 
-        let getCookieView = (
-            <Col span={12}>
-                <Row>
-                    <Col span={17}><Input id={'meiCangToken'} style={{width:'350px'}} placeholder="登录美餐网获取的token"/></Col>
-                    <Col span={6}><Button type="primary" icon="search" onClick={this.handleInitInfo}>获取点餐信息</Button></Col>
-                </Row>
-            </Col>
-        );
+        let getCookieView = null;
         if (userDO) {
             userName = userDO.name;
-            getCookieView = null;
+        } else {
+            getCookieView = (
+                <Col span={12}>
+                    <Row>
+                        <Col span={17}><Input id={'meiCangToken'} style={{width:'350px'}} placeholder="登录美餐网获取的token"/></Col>
+                        <Col span={6}><Button type="primary" icon="search" onClick={this.handleInitInfo}>获取点餐信息</Button></Col>
+                    </Row>
+                </Col>
+            );
         }
 
 		return(

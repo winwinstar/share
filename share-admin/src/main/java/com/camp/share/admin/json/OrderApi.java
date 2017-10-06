@@ -49,9 +49,14 @@ public class OrderApi {
             }
 
             Cookie cookie = new Cookie("token", orderVO.getUserDO().getToken());
-            cookie.setMaxAge(30 * 60 * 24 * 365);// 设置为30min
+            cookie.setMaxAge(60 * 60 * 24 * 365);// 设置为一年
             cookie.setPath("/");
             response.addCookie(cookie);
+
+            Cookie name = new Cookie("name", orderVO.getUserDO().getName());
+            cookie.setMaxAge(60 * 60 * 24 * 365);// 设置为一年
+            cookie.setPath("/");
+            response.addCookie(name);
 
             return Result.success(orderVO);
         }
