@@ -4,6 +4,7 @@
     <file url="file://$PROJECT_DIR$" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/share-admin" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/share-core" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/share-dubbo-api" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/share-job" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/share-site" charset="UTF-8" />
   </component>

@@ -1,6 +1,7 @@
 package com.camp.share.admin.json;
 
 import com.camp.share.core.util.HttpClient;
+import com.camp.share.service.TestDubboService;
 import com.wordnik.swagger.annotations.Api;
 import lombok.extern.slf4j.Slf4j;
 import org.mybatis.spring.SqlSessionTemplate;
@@ -29,6 +30,11 @@ import java.util.Map;
 @ResponseBody
 public class Test {
 
+    private JdbcTemplate jdbcTemplate;
+
+    @Autowired
+    private TestDubboService testDubboService;
+
     @RequestMapping(value = "/test", method = RequestMethod.GET)
     public void excute(HttpServletResponse response) {
         try {
@@ -40,8 +46,6 @@ public class Test {
             e.printStackTrace();
         }
     }
-
-    private JdbcTemplate jdbcTemplate;
 
     //注入方法2
     @Autowired
@@ -59,5 +63,10 @@ public class Test {
     public void test() {
         jdbcTemplate.execute("INSERT INTO test2 (name) VALUES ('wss')");
         throw new RuntimeException("子方法异常出现。。。");
+    }
+
+    @RequestMapping(value = "/dubboTest", method = RequestMethod.GET)
+    public void bubbo() {
+        log.info("log: {}", testDubboService.testDubbo());
     }
 }

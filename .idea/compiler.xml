@@ -8,6 +8,7 @@
         <outputRelativeToContentRoot value="true" />
         <module name="share-admin" />
         <module name="share-core" />
+        <module name="share-dubbo-api" />
         <module name="share-job" />
         <module name="share-site" />
       </profile>
@@ -16,6 +17,7 @@
       <module name="share" target="1.5" />
       <module name="share-admin" target="1.5" />
       <module name="share-core" target="1.5" />
+      <module name="share-dubbo-api" target="1.5" />
       <module name="share-job" target="1.5" />
       <module name="share-site" target="1.5" />
     </bytecodeTargetLevel>

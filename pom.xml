@@ -10,6 +10,7 @@
     <module>share-core</module>
     <module>share-site</module>
     <module>share-job</module>
+    <module>share-dubbo-api</module>
   </modules>
   <packaging>pom</packaging>
 
@@ -17,10 +18,11 @@
   <url>http://maven.apache.org</url>
 
   <properties>
-    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <spring.version>4.3.2.RELEASE</spring.version>
-    <swagger.version>2.2.2</swagger.version>
-    <lombok.version>1.16.8</lombok.version>
+      <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+      <spring.version>4.3.2.RELEASE</spring.version>
+      <swagger.version>2.2.2</swagger.version>
+      <lombok.version>1.16.8</lombok.version>
+      <dubbo.version>2.5.8</dubbo.version>
   </properties>
 
   <dependencies>
@@ -43,6 +45,12 @@
       <artifactId>junit</artifactId>
       <version>3.8.1</version>
       <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>com.alibaba</groupId>
+      <artifactId>dubbo</artifactId>
+      <version>${dubbo.version}</version>
     </dependency>
 
     <dependency>

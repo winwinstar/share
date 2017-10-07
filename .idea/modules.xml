@@ -5,6 +5,7 @@
       <module fileurl="file://$PROJECT_DIR$/share.iml" filepath="$PROJECT_DIR$/share.iml" />
       <module fileurl="file://$PROJECT_DIR$/share-admin/share-admin.iml" filepath="$PROJECT_DIR$/share-admin/share-admin.iml" />
       <module fileurl="file://$PROJECT_DIR$/share-core/share-core.iml" filepath="$PROJECT_DIR$/share-core/share-core.iml" />
+      <module fileurl="file://$PROJECT_DIR$/share-dubbo-api/share-dubbo-api.iml" filepath="$PROJECT_DIR$/share-dubbo-api/share-dubbo-api.iml" />
       <module fileurl="file://$PROJECT_DIR$/share-job/share-job.iml" filepath="$PROJECT_DIR$/share-job/share-job.iml" />
       <module fileurl="file://$PROJECT_DIR$/share-site/share-site.iml" filepath="$PROJECT_DIR$/share-site/share-site.iml" />
     </modules>
