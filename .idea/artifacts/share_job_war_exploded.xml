@@ -67,6 +67,8 @@
           <element id="library" level="project" name="Maven: org.springframework:spring-aop:4.3.2.RELEASE" />
           <element id="library" level="project" name="Maven: org.springframework:spring-aspects:4.3.2.RELEASE" />
           <element id="library" level="project" name="Maven: org.aspectj:aspectjweaver:1.8.9" />
+          <element id="library" level="project" name="Maven: com.google.zxing:javase:3.0.0" />
+          <element id="library" level="project" name="Maven: com.google.zxing:core:3.0.0" />
         </element>
       </element>
       <element id="directory" name="META-INF">
